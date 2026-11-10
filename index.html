@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Virtual Doidão - Apps e Sites Prontos</title>
+    <script src="https://tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER -->
+    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent tracking-wider">
+                Loja Virtual Doidão 🤪
+            </a>
+            <div class="flex gap-3">
+                <button onclick="abrirResgate()" class="text-xs bg-gray-800 border border-gray-700 hover:border-gray-500 text-white px-3 py-1.5 rounded transition font-medium">
+                    🔑 Módulo de Resgate
+                </button>
+                <button onclick="abrirLoginAdmin()" class="text-xs border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white px-3 py-1.5 rounded transition">
+                    ⚙️ Painel do Dono
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="max-w-4xl mx-auto text-center px-4 py-12">
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+            Adquira códigos <span class="bg-gradient-to-r from-yellow-400 to-amber-300 bg-clip-text text-transparent">prontos e validados</span>
+        </h1>
+        <p class="text-gray-400 max-w-xl mx-auto">
+            Negocie diretamente pelo WhatsApp da Loja Virtual Doidão. Após o pagamento, você recebe sua chave para liberar o download aqui no site.
+        </p>
+    </section>
+
+    <!-- GRID DE PRODUTOS -->
+    <main class="max-w-6xl mx-auto px-4 py-8 w-full flex-grow">
+        <div id="listaProdutos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Gerado dinamicamente -->
+        </div>
+    </main>
+
+    <!-- MODAL DE LOGIN ADMINISTRATIVO -->
+    <div id="modalLogin" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-sm w-full p-6 relative shadow-2xl">
+            <button onclick="fecharLoginAdmin()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">&times;</button>
+            <h3 class="text-xl font-bold text-white mb-4">Acesso Administrativo</h3>
+            <form onsubmit="autenticarAdmin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">CPF</label>
+                    <input type="text" id="loginCPF" required placeholder="Apenas números" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Senha</label>
+                    <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500">
+                </div>
+                <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-500 text-gray-900 font-bold py-2 rounded-lg text-sm transition">
+                    Entrar no Painel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO -->
+    <div id="modalAdmin" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-lg w-full p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="fecharAdmin()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">&times;</button>
+            
+            <h3 class="text-xl font-bold text-white mb-4">Gerenciar Catálogo e Chaves</h3>
+            
+            <!-- FORMULÁRIO DE CADASTRO -->
+            <form id="formProduto" onsubmit="salvarProduto(event)" class="space-y-4 border-b border-gray-700 pb-6 mb-6">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Nome do Produto</label>
+                    <input type="text" id="prodNome" required class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Categoria</label>
+                        <input type="text" id="prodCategoria" required class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Preço</label>
+                        <input type="text" id="prodPreco" required class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Link Secreto do Produto (Google Drive, GitHub, etc.)</label>
+                    <input type="url" id="prodLink" required placeholder="https://" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Descrição</label>
+                    <textarea id="prodDescricao" required rows="2" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-yellow-500"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-500 text-gray-900 font-bold py-2 rounded-lg text-sm transition">
+                    ➕ Salvar Produto Protegido
+                </button>
+            </form>
+
+            <!-- GERADOR DE CHAVES DE APROVAÇÃO -->
+            <div class="bg-gray-950 border border-gray-700 rounded-xl p-4 mb-6">
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">🔑 Painel de Liberação (Aprovar Cliente)</h4>
+                <div class="flex gap-2 mb-3">
+                    <select id="selectLiberar" class="flex-grow bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-sm">
+                        <!-- Opções dinâmicas -->
+                    </select>
+                    <button onclick="gerarChaveAcesso()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                        Gerar Chave
+                    </button>
+                </div>
+                <div id="chaveGeradaContainer" class="hidden bg-gray-900 border border-dashed border-emerald-500 p-2 rounded text-center">
+                    <span class="text-xs text-gray-400 block">Envie essa chave para o cliente abrir o link:</span>
+                    <span id="txtChaveGerada" class="text-emerald-400 font-mono font-bold select-all text-sm"></span>
+                </div>
+            </div>
+
+            <h4 class="text-sm font-bold text-gray-400 mb-2">Produtos Cadastrados:</h4>
+            <div id="adminListaItens" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE RESGATE -->
+    <div id="modalResgate" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-md w-full p-6 relative shadow-2xl">
+            <button onclick="fecharResgate()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">&times;</button>
+            <h3 class="text-xl font-bold text-white mb-1">Acessar Produto Adquirido</h3>
+            <p class="text-xs text-gray-400 mb-6">Insira a chave de liberação enviada pelo desenvolvedor.</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="inputChaveCliente" placeholder="Cole sua chave aqui (Ex: CODE-XXXX)" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-3 text-center font-mono text-emerald-400 uppercase tracking-widest focus:outline-none focus:border-emerald-500">
+                <button onclick="validarChaveCliente()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg text-sm transition">
+                    🔓 Validar e Abrir Link
+                </button>
+                <div id="feedbackResgate" class="hidden text-center text-sm font-medium"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gray-800 bg-gray-950 mt-12 py-6 text-center text-xs text-gray-500">
+        &copy; 2026 Loja Virtual Doidão. Todos os direitos reservados.
+    </footer>
+
+    <!-- LOGICA SCRIPT -->
+    <script>
+        const CPF_CORRETO = "12480670961";
+        const SENHA_CORRETA = "admin2298";
+        const WHATSAPP_DONO = "5548998091948"; 
+
+        const produtosPadrao = [
+            { id: 1, nome: "Landing Page para SaaS", categoria: "Web App", preco: "R$ 149", link: "https://github.com", descricao: "Estrutura moderna em React/Tailwind." },
